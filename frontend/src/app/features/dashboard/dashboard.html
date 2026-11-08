@@ -1,0 +1,33 @@
+<section class="dashboard">
+  <header>
+    <h1>Panel general</h1>
+    <p>Resumen operativo de TechSupply Solutions.</p>
+  </header>
+
+  <div class="grid">
+    @for (metric of metrics; track metric.label) {
+      <mat-card appearance="outlined" class="metric">
+        <mat-card-content>
+          <div class="metric-top">
+            <span class="label">{{ metric.label }}</span>
+            <mat-icon>{{ metric.icon }}</mat-icon>
+          </div>
+          <strong class="value">{{ metric.value }}</strong>
+          <span class="hint">{{ metric.hint }}</span>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <mat-card appearance="outlined" class="notice">
+    <mat-card-content>
+      <h2>Sprint 0 — base del proyecto</h2>
+      <p>
+        Este panel es el esqueleto de la Fase 3. La API expone el contrato de
+        <strong>Productos</strong> en <code>/api/v1/productos</code> y la documentación
+        OpenAPI en <code>/docs</code>. En el Sprint 1 se conecta la base de datos
+        Supabase y se completa la Gestión Maestra.
+      </p>
+    </mat-card-content>
+  </mat-card>
+</section>

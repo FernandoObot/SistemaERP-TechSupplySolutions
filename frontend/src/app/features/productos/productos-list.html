@@ -1,0 +1,76 @@
+<section class="productos">
+  <header>
+    <div>
+      <h1>Productos</h1>
+      <p>Catálogo maestro — Sprint 0 (repositorio en memoria)</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="reload()">
+      <mat-icon>refresh</mat-icon>
+      Recargar
+    </button>
+  </header>
+
+  @if (loading()) {
+    <div class="state">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span>Cargando productos…</span>
+    </div>
+  } @else if (error()) {
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <p class="error">{{ error() }}</p>
+      </mat-card-content>
+    </mat-card>
+  } @else if (productos().length === 0) {
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <p>
+          No hay productos todavía. Crea uno con
+          <code>POST /api/v1/productos</code> o desde Swagger en
+          <code>http://localhost:8080/docs</code>.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card appearance="outlined">
+      <table mat-table [dataSource]="productos()" class="table">
+        <ng-container matColumnDef="sku">
+          <th mat-header-cell *matHeaderCellDef>SKU</th>
+          <td mat-cell *matCellDef="let p">{{ p.sku }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef>Nombre</th>
+          <td mat-cell *matCellDef="let p">{{ p.nombre }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="categoria">
+          <th mat-header-cell *matHeaderCellDef>Categoría</th>
+          <td mat-cell *matCellDef="let p">{{ p.categoria }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precio">
+          <th mat-header-cell *matHeaderCellDef>Precio</th>
+          <td mat-cell *matCellDef="let p">{{ p.precio | currency: 'MXN' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="puntoReorden">
+          <th mat-header-cell *matHeaderCellDef>Punto de reorden</th>
+          <td mat-cell *matCellDef="let p">{{ p.puntoReorden }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="activo">
+          <th mat-header-cell *matHeaderCellDef>Activo</th>
+          <td mat-cell *matCellDef="let p">
+            <mat-icon [class.inactive]="!p.activo">
+              {{ p.activo ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+    </mat-card>
+  }
+</section>

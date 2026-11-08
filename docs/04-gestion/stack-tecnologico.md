@@ -2,20 +2,21 @@
 
 ## Frontend
 
-- **Angular 17+** con componentes standalone, `Signals` y `RxJS`.
+- **Angular 22** con componentes standalone, `Signals` y `RxJS`.
 - **TypeScript** estricto (`strict: true`).
-- **Angular Material** o **Tailwind CSS** para UI (decidir en Fase 3).
+- **Angular Material** para UI.
 - Cliente Supabase (`@supabase/supabase-js`) **solo para Auth** y Storage.
 - Consumo de la API vía `HttpClient` con interceptores para el JWT.
 
 ## Backend (API REST)
 
-- **Scala 3** — lenguaje funcional, tipado estático, JVM.
+- **Scala 3.9** — lenguaje funcional, tipado estático, JVM.
 - **http4s** — servidor HTTP funcional.
 - **Tapir** — descripción de endpoints y generación de OpenAPI 3.1 + Swagger UI.
 - **Cats Effect 3** — efectos y concurrencia.
 - **Circe** — serialización JSON.
 - **Skunk** — acceso a PostgreSQL funcional y type-safe.
+- **sbt 1.13** — build multi-módulo.
 - **MUnit / ScalaCheck** — pruebas unitarias y de propiedades.
 
 Alternativas evaluadas: Play Framework (menos funcional, más pesado), Akka HTTP
