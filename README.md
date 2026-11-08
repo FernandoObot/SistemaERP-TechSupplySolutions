@@ -9,7 +9,7 @@ funcional + Supabase**.
 | Fase | Descripción | Estado |
 |---|---|---|
 | 1 | Análisis y diseño arquitectónico (4+1 vistas) | ✅ Documentada |
-| 2 | Componentes reutilizables | ⏳ Pendiente |
+| 2 | Componentes reutilizables | ✅ Documentada |
 | 3 | Desarrollo incremental (sprints) | ⏳ Pendiente |
 | 4 | Pruebas y validación | ⏳ Pendiente |
 
@@ -21,7 +21,7 @@ funcional + Supabase**.
 - **Reportes:** Metabase (dashboards) + JasperReports (PDF).
 - **Docs:** Markdown + MkDocs Material + PlantUML + OpenAPI.
 
-## Documentación (Fase 1)
+## Documentación
 
 - [Índice de documentación](docs/README.md)
 - [Entrevistas simuladas](docs/01-requisitos/entrevistas.md)
@@ -30,6 +30,7 @@ funcional + Supabase**.
 - [Casos de uso](docs/01-requisitos/casos-de-uso.md)
 - [SAD — Arquitectura 4+1 vistas](docs/02-arquitectura/sad.md)
 - [Decisiones arquitectónicas (ADR)](docs/02-arquitectura/decisiones.md)
+- [Componentes reutilizables (Fase 2)](docs/02-arquitectura/componentes/README.md)
 - [Ramas y Conventional Commits](docs/04-gestion/ramas-y-commits.md)
 - [Stack y justificación](docs/04-gestion/stack-tecnologico.md)
 
@@ -43,6 +44,7 @@ Fuentes PlantUML en [`docs/03-diagramas/plantuml/`](docs/03-diagramas/plantuml/)
 | Paquetes (vista lógica) | `paquetes.puml` |
 | Clases del dominio | `clases-dominio.puml` |
 | Componentes (implementación) | `componentes.puml` |
+| Componentes reutilizables (Fase 2) | `componentes-reutilizables.puml` |
 | Despliegue | `despliegue.puml` |
 | Secuencia — compras | `secuencia-compras.puml` |
 | Secuencia — ventas | `secuencia-ventas.puml` |

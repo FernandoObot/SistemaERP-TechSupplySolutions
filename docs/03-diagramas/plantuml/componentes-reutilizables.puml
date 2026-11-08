@@ -1,0 +1,121 @@
+@startuml componentes-reutilizables
+title Fase 2 — Componentes reutilizables, puertos y consumidores
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam component {
+  BackgroundColor #EAF2FB
+  BorderColor #2F5D8A
+}
+
+package "Módulos consumidores" {
+  [Gestión Maestra] as Maestra
+  [Compras] as Compras
+  [Inventario] as Inventario
+  [Ventas] as Ventas
+  [Contabilidad] as Contabilidad
+  [RRHH] as RRHH
+  [Reportería] as Reporteria
+  [Seguridad] as Seguridad
+}
+
+package "Componentes reutilizables" {
+  component "C-01 Autenticación\n<<AuthPort>>" as C01
+  component "C-02 Búsqueda avanzada\n<<SearchPort[A]>>" as C02
+  component "C-03 Reportería\n<<ReportPort>>" as C03
+  component "C-04 Auditoría\n<<AuditPort>>" as C04
+  component "C-05 Notificaciones\n<<NotificationPort>>" as C05
+  component "C-06 Validación\n<<Validator[A]>>" as C06
+  component "C-07 CRUD genérico\n<<CrudRepository>>" as C07
+}
+
+package "Adaptadores / infraestructura" {
+  [Supabase Auth\n(GoTrue + JWKS)] as SupaAuth
+  database "PostgreSQL\n(Supabase)" as DB
+  [SMTP / SMS / In-App] as Msg
+  [JasperReports] as Jasper
+  [Metabase] as Meta
+}
+
+' --- Autenticación ---
+Maestra --> C01
+Compras --> C01
+Inventario --> C01
+Ventas --> C01
+Contabilidad --> C01
+RRHH --> C01
+Reporteria --> C01
+Seguridad --> C01
+C01 --> SupaAuth
+
+' --- Búsqueda ---
+Maestra --> C02
+Compras --> C02
+Inventario --> C02
+Ventas --> C02
+Contabilidad --> C02
+Reporteria --> C02
+C02 --> DB
+
+' --- Reportería ---
+Compras --> C03
+Inventario --> C03
+Ventas --> C03
+Contabilidad --> C03
+RRHH --> C03
+Reporteria --> C03
+C03 --> Jasper
+Meta --> DB : solo lectura
+
+' --- Auditoría ---
+Maestra --> C04
+Compras --> C04
+Inventario --> C04
+Ventas --> C04
+Contabilidad --> C04
+RRHH --> C04
+Seguridad --> C04
+C04 --> DB
+
+' --- Notificaciones ---
+Maestra --> C05
+Compras --> C05
+Inventario --> C05
+Ventas --> C05
+Contabilidad --> C05
+RRHH --> C05
+Seguridad --> C05
+C05 --> Msg
+
+' --- Validación ---
+Maestra --> C06
+Compras --> C06
+Inventario --> C06
+Ventas --> C06
+Contabilidad --> C06
+RRHH --> C06
+Seguridad --> C06
+
+' --- CRUD ---
+Maestra --> C07
+Compras --> C07
+Inventario --> C07
+Ventas --> C07
+Contabilidad --> C07
+RRHH --> C07
+C07 --> DB
+C07 ..> C04 : audita
+C07 ..> C06 : valida
+
+note bottom of C07
+  El CRUD genérico se usa solo en
+  catálogos. Los procesos con
+  invariantes (OC, OV, asientos,
+  nómina) usan casos de uso propios.
+end note
+
+note top of C01
+  Ningún módulo implementa login:
+  todos consumen el mismo puerto.
+end note
+
+@enduml

@@ -1,7 +1,8 @@
 # Documentación — Sistema ERP TechSupply Solutions
 
 Índice de la documentación del proyecto académico. La **Fase 1** (análisis y diseño
-arquitectónico) está contenida en `01-requisitos/` y `02-arquitectura/`.
+arquitectónico) está contenida en `01-requisitos/` y `02-arquitectura/`; la **Fase 2**
+(componentes reutilizables) en `02-arquitectura/componentes/`.
 
 ## Estructura
 
@@ -15,7 +16,10 @@ docs/
 │   └── fuentes/                 # Narrativa y rúbrica originales del curso
 ├── 02-arquitectura/
 │   ├── sad.md                   # Documento de arquitectura (4+1 vistas)
-│   └── decisiones.md            # ADR: decisiones arquitectónicas
+│   ├── decisiones.md            # ADR: decisiones arquitectónicas
+│   └── componentes/             # Fase 2: 7 componentes reutilizables
+│       ├── README.md            # Índice y matriz de reutilización
+│       └── 01..07-*.md          # Contrato de cada componente
 ├── 03-diagramas/
 │   ├── plantuml/                # Fuente .puml versionada
 │   └── exportados/              # PNG/SVG generados (CI o local)

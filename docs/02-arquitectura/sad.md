@@ -194,6 +194,10 @@ reutilizables. Diagrama: `plantuml/componentes.puml`.
 Cada componente se implementa una vez y se reutiliza en ≥ 3 contextos, cumpliendo
 el criterio de la rúbrica (interfaz documentada + reutilización demostrada).
 
+El diseño detallado (contratos Scala/Angular, endpoints, errores, pruebas y matriz de
+reutilización) está en [`componentes/README.md`](componentes/README.md). Diagrama:
+`docs/03-diagramas/plantuml/componentes-reutilizables.puml`.
+
 ### 6.4 Contrato de API
 
 - REST versionada: `/api/v1/...`
