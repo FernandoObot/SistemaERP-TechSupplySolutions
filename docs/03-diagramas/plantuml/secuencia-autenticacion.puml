@@ -1,0 +1,43 @@
+@startuml secuencia-autenticacion
+title Secuencia — Autenticación y autorización (Supabase + JWT)
+autonumber
+
+actor Usuario
+participant "SPA Angular" as UI
+participant "Supabase Auth\n(GoTrue)" as Auth
+participant "API Scala\n(http4s/Tapir)" as API
+participant "JWKS Supabase" as JWKS
+participant "Repositorio\nUsuarios" as Repo
+database "PostgreSQL" as DB
+
+Usuario -> UI : credenciales
+UI -> Auth : POST /token (email, password)
+Auth -> DB : validar usuario
+Auth --> UI : access_token (JWT) + refresh_token
+UI -> UI : guardar sesión (memoria/almacenamiento seguro)
+UI -> API : GET /api/v1/productos\nAuthorization: Bearer <jwt>
+API -> JWKS : obtener claves públicas
+JWKS --> API : claves
+API -> API : verificar firma, expiración y audiencia
+alt token inválido/expirado
+  API --> UI : 401 Unauthorized
+  UI -> Auth : refresh_token
+  Auth --> UI : nuevo access_token
+else token válido
+  API -> Repo : cargar usuario y roles
+  Repo -> DB : SELECT usuario, roles, permisos
+  Repo --> API : Usuario(roles)
+  API -> API : autorizar RBAC (recurso/acción)
+  alt sin permiso
+    API --> UI : 403 Forbidden
+  else autorizado
+    API --> UI : 200 OK (datos)
+  end
+end
+
+note over API, DB
+  Defensa en profundidad: RBAC en la API
+  y RLS en PostgreSQL.
+end note
+
+@enduml

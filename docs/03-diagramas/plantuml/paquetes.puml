@@ -1,0 +1,82 @@
+@startuml paquetes
+title Vista Lógica — Paquetes del dominio
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+
+package "ERP TechSupply Solutions" {
+
+  package "maestra" as maestra {
+    [Producto]
+    [Proveedor]
+    [Cliente]
+    [Empleado]
+    [Almacen]
+    [RutaEntrega]
+  }
+
+  package "compras" as compras {
+    [Requisicion]
+    [OrdenCompra]
+    [Recepcion]
+  }
+
+  package "inventario" as inventario {
+    [Movimiento]
+    [Stock]
+    [Conteo]
+    [Alerta]
+  }
+
+  package "ventas" as ventas {
+    [Cotizacion]
+    [OrdenVenta]
+    [Factura]
+    [Pago]
+  }
+
+  package "contabilidad" as contabilidad {
+    [PlanCuenta]
+    [Asiento]
+    [Periodo]
+    [Presupuesto]
+  }
+
+  package "rrhh" as rrhh {
+    [Nomina]
+    [Asistencia]
+    [Vacacion]
+  }
+
+  package "seguridad" as seguridad {
+    [Usuario]
+    [Rol]
+    [Permiso]
+    [Auditoria]
+  }
+
+  package "reporteria" as reporteria {
+    [Reporte]
+    [Indicador]
+  }
+}
+
+compras ..> maestra
+compras ..> inventario
+ventas ..> maestra
+ventas ..> inventario
+ventas ..> contabilidad
+compras ..> contabilidad
+rrhh ..> contabilidad
+inventario ..> maestra
+contabilidad ..> maestra
+reporteria ..> ventas
+reporteria ..> compras
+reporteria ..> inventario
+reporteria ..> contabilidad
+
+seguridad ..> maestra : identidad transversal
+inventario ..> seguridad : auditoría
+ventas ..> seguridad : auditoría
+compras ..> seguridad : auditoría
+
+@enduml

@@ -1,0 +1,61 @@
+@startuml secuencia-ventas
+title Secuencia — Ventas: cotización → OV → factura → cobro
+autonumber
+
+actor Cliente
+actor Vendedor
+participant "SPA Angular" as UI
+participant "Supabase Auth" as Auth
+participant "API Scala" as API
+participant "Dominio Ventas" as Dom
+participant "Inventario" as Inv
+participant "Contabilidad" as Con
+database "PostgreSQL" as DB
+
+Cliente -> UI : iniciar sesión
+UI -> Auth : login(credenciales)
+Auth --> UI : JWT
+UI -> API : POST /cotizaciones (Bearer JWT)
+API -> API : validar JWT (JWKS)
+API -> Dom : crearCotizacion(cliente, items)
+Dom -> Inv : consultarDisponibilidad(items)
+Inv --> Dom : disponible
+Dom -> DB : INSERT cotizacion + detalles
+API --> UI : 201 Cotizacion(vigencia)
+
+Cliente -> UI : aprobar cotización
+UI -> API : POST /ordenes-venta
+API -> Dom : convertirAOrdenVenta(cotizacion)
+Dom -> Inv : reservarStock(items)
+Inv -> DB : UPDATE stock SET reservado = reservado + n\nWHERE disponible >= n
+alt stock insuficiente
+  Inv --> Dom : error StockInsuficiente
+  API --> UI : 409 Conflict
+else stock reservado
+  Dom -> Dom : validarCredito(cliente, total)
+  alt crédito excedido
+    Dom -> DB : INSERT orden_venta (pendiente_autorizacion)
+    API --> UI : 202 Accepted (requiere autorización)
+  else crédito aprobado
+    Dom -> DB : INSERT orden_venta (confirmada)
+    API --> UI : 201 Created
+  end
+end
+
+Vendedor -> UI : facturar OV
+UI -> API : POST /facturas
+API -> Dom : emitirFactura(ov)
+Dom -> Con : generarCuentaPorCobrar(factura)
+Con -> DB : INSERT cuenta_por_cobrar
+Dom -> Con : registrarAsiento(factura)
+Con -> DB : INSERT asiento + lineas
+API --> UI : 201 Factura
+
+Cliente -> UI : registrar pago
+UI -> API : POST /pagos
+API -> Dom : registrarPago(factura, monto)
+Dom -> DB : INSERT pago
+Dom -> DB : UPDATE saldo_cliente
+API --> UI : 201 Pago
+
+@enduml

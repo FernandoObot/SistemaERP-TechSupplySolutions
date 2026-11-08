@@ -1,0 +1,58 @@
+@startuml despliegue
+title Vista de Despliegue — Producción
+skinparam node {
+  BackgroundColor #F4F7FA
+  BorderColor #2F5D8A
+}
+
+node "Usuario" as User {
+  [Navegador\n(SPA Angular)] as Browser
+}
+
+node "CDN / Hosting\nVercel · Netlify · Nginx" as CDN {
+  artifact "Build Angular\n(static)" as Static
+}
+
+node "Contenedor API\nRender · Railway · Fly.io" as APIHost {
+  [API Scala\nhttp4s + Tapir] as API
+  [JasperReports\n(worker)] as Jasper
+}
+
+cloud "Supabase (administrado)" as Supa {
+  database "PostgreSQL 15+\nRLS · Backups" as PG
+  [Auth (GoTrue)] as Auth
+  [Storage] as Store
+}
+
+node "Metabase" as MetaNode {
+  [Metabase\n(solo lectura)] as Meta
+}
+
+node "GitHub Actions" as CI {
+  [CI/CD\nbuild · test · OpenAPI] as Pipeline
+}
+
+User --> Browser
+Browser --> CDN : HTTPS
+Browser --> API : HTTPS/REST + JWT
+Browser --> Auth : HTTPS (login)
+Browser --> Store : HTTPS
+CDN --> Static
+API --> PG : SQL/TLS
+API --> Auth : JWKS
+Jasper --> PG
+Meta --> PG : rol read-only
+Pipeline --> APIHost : despliegue
+Pipeline --> CDN : despliegue
+
+note right of API
+  Sin estado: escalado horizontal
+  tras balanceador.
+end note
+
+note bottom of PG
+  Respaldos automáticos
+  y cifrado en reposo.
+end note
+
+@enduml

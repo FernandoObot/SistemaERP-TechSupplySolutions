@@ -1,0 +1,55 @@
+@startuml secuencia-compras
+title Secuencia — Compras: requisición → OC → recepción → contabilidad
+autonumber
+
+actor Comprador
+actor Almacenista
+participant "SPA Angular" as UI
+participant "API Scala\n(http4s/Tapir)" as API
+participant "Dominio\nCompras" as Dom
+participant "Inventario" as Inv
+participant "Contabilidad" as Con
+database "PostgreSQL\n(Supabase)" as DB
+
+== Detección y requisición ==
+API -> DB : consultar stock vs punto de reorden
+API -> Dom : crearRequisicion(producto, cantidadSugerida)
+Dom -> DB : INSERT requisicion (pendiente)
+Dom --> API : Requisicion
+
+== Emisión de OC ==
+Comprador -> UI : aprobar requisición
+UI -> API : POST /api/v1/compras/ordenes
+API -> Dom : emitirOrdenCompra(requisicion, proveedor)
+Dom -> DB : BEGIN
+Dom -> DB : INSERT orden_compra + detalles
+Dom -> DB : COMMIT
+Dom --> API : OrdenCompra(folio, total)
+API --> UI : 201 Created
+
+== Recepción ==
+Almacenista -> UI : registrar recepción
+UI -> API : POST /api/v1/compras/recepciones
+API -> Dom : registrarRecepcion(oc, partidas)
+Dom -> DB : BEGIN
+Dom -> Inv : registrarEntrada(producto, cantidad)
+Inv -> DB : UPDATE stock (stock + cantidad)
+Inv -> DB : INSERT movimiento (entrada)
+Dom -> Con : generarCuentaPorPagar(oc, facturaProveedor)
+Con -> DB : INSERT cuenta_por_pagar
+Dom -> DB : COMMIT
+API --> UI : 201 Created
+
+== Asiento contable ==
+API -> Con : registrarAsiento(recepcion)
+Con -> Con : validar debe = haber y periodo abierto
+Con -> DB : INSERT asiento + lineas
+Con --> API : Asiento(referencia=recepcion)
+
+note over Dom, DB
+  Toda la recepción ocurre en una
+  transacción atómica: stock, movimiento,
+  cuenta por pagar y asiento.
+end note
+
+@enduml

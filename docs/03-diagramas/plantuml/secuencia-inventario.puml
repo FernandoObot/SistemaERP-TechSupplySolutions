@@ -1,0 +1,40 @@
+@startuml secuencia-inventario
+title Secuencia — Inventario: salida con validación de stock
+autonumber
+
+actor Almacenista
+participant "SPA Angular" as UI
+participant "API Scala" as API
+participant "Dominio\nInventario" as Dom
+database "PostgreSQL" as DB
+
+Almacenista -> UI : registrar salida
+UI -> API : POST /api/v1/inventario/movimientos\n{tipo: SALIDA, productoId, cantidad}
+API -> API : validar JWT + rol ALMACEN
+API -> Dom : registrarSalida(productoId, cantidad)
+Dom -> DB : BEGIN
+Dom -> DB : SELECT stock FOR UPDATE
+alt stock < cantidad
+  Dom -> DB : ROLLBACK
+  Dom --> API : Left(StockInsuficiente)
+  API --> UI : 422 Unprocessable Entity
+else stock suficiente
+  Dom -> DB : UPDATE stock SET cantidad = cantidad - n
+  Dom -> DB : INSERT movimiento (SALIDA)
+  Dom -> DB : COMMIT
+  Dom -> Dom : evaluarUmbral(stock)
+  opt stock <= puntoReorden
+    Dom -> DB : INSERT alerta (STOCK_BAJO)
+    Dom -> Dom : notificar (asíncrono)
+  end
+  Dom --> API : Right(Movimiento)
+  API --> UI : 201 Created
+end
+
+note over Dom, DB
+  La actualización condicional y el
+  bloqueo evitan stock negativo y
+  sobreventa concurrente.
+end note
+
+@enduml
