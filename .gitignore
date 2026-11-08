@@ -1,0 +1,52 @@
+# --- Sistema operativo / editores ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Secretos y entorno ---
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+
+# --- Node / Angular ---
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Scala / JVM / sbt ---
+target/
+project/target/
+project/project/
+.bsp/
+.metals/
+.bloop/
+.scala-build/
+*.class
+*.jar
+!tools/plantuml.jar
+
+# --- Supabase ---
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# --- Documentación generada ---
+site/
+.mkdocs_cache/
+
+# --- Logs y temporales ---
+*.log
+tmp/
+.tmp/
+
+# --- Nota: los PNG de docs/03-diagramas/exportados/ SÍ se versionan ---
