@@ -1,0 +1,305 @@
+@startuml clases-dominio
+title Vista Lógica — Modelo de clases del dominio
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "maestra" {
+
+  class Producto {
+    + id : UUID
+    + sku : String
+    + nombre : String
+    + categoria : String
+    + linea : String
+    + precio : Money
+    + puntoReorden : Int
+    + activo : Boolean
+  }
+
+  class Proveedor {
+    + id : UUID
+    + nombre : String
+    + contacto : String
+    + condicionesPago : String
+    + evaluacion : Int
+    + activo : Boolean
+  }
+
+  class Cliente {
+    + id : UUID
+    + nombre : String
+    + contacto : String
+    + limiteCredito : Money
+    + saldo : Money
+    + zonaEntrega : String
+    + activo : Boolean
+  }
+
+  class Empleado {
+    + id : UUID
+    + nombre : String
+    + puesto : String
+    + departamento : String
+    + salario : Money
+  }
+
+  class Almacen {
+    + id : UUID
+    + codigo : String
+    + ubicacion : String
+    + capacidad : Int
+  }
+
+  class RutaEntrega {
+    + id : UUID
+    + nombre : String
+    + transportista : String
+  }
+}
+
+package "compras" {
+  class Requisicion {
+    + id : UUID
+    + fecha : Date
+    + estado : EstadoRequisicion
+    + cantidadSugerida : Int
+  }
+
+  class OrdenCompra {
+    + id : UUID
+    + folio : String
+    + fecha : Date
+    + estado : EstadoOC
+    + total : Money
+  }
+
+  class DetalleOC {
+    + id : UUID
+    + cantidad : Int
+    + precioUnitario : Money
+    + subtotal : Money
+  }
+
+  class Recepcion {
+    + id : UUID
+    + fecha : Date
+    + estado : EstadoRecepcion
+    + observaciones : String
+  }
+}
+
+package "inventario" {
+  class Movimiento {
+    + id : UUID
+    + tipo : TipoMovimiento
+    + cantidad : Int
+    + fecha : DateTime
+    + referencia : String
+  }
+
+  class Stock {
+    + id : UUID
+    + cantidad : Int
+    + reservado : Int
+    + ubicacion : String
+  }
+
+  class Conteo {
+    + id : UUID
+    + fecha : Date
+    + estado : EstadoConteo
+  }
+
+  class Alerta {
+    + id : UUID
+    + tipo : TipoAlerta
+    + mensaje : String
+    + atendida : Boolean
+  }
+}
+
+package "ventas" {
+  class Cotizacion {
+    + id : UUID
+    + folio : String
+    + fecha : Date
+    + vigencia : Date
+    + estado : EstadoCotizacion
+    + total : Money
+  }
+
+  class OrdenVenta {
+    + id : UUID
+    + folio : String
+    + fecha : Date
+    + estado : EstadoOV
+    + total : Money
+  }
+
+  class DetalleOV {
+    + id : UUID
+    + cantidad : Int
+    + precioUnitario : Money
+    + descuento : Money
+    + subtotal : Money
+  }
+
+  class Factura {
+    + id : UUID
+    + folio : String
+    + fecha : Date
+    + subtotal : Money
+    + impuestos : Money
+    + total : Money
+  }
+
+  class Pago {
+    + id : UUID
+    + monto : Money
+    + fecha : Date
+    + medio : String
+  }
+}
+
+package "contabilidad" {
+  class PlanCuenta {
+    + id : UUID
+    + codigo : String
+    + nombre : String
+    + naturaleza : Naturaleza
+    + nivel : Int
+  }
+
+  class Asiento {
+    + id : UUID
+    + numero : String
+    + fecha : Date
+    + descripcion : String
+    + referencia : String
+  }
+
+  class LineaAsiento {
+    + id : UUID
+    + debe : Money
+    + haber : Money
+  }
+
+  class Periodo {
+    + id : UUID
+    + nombre : String
+    + inicio : Date
+    + fin : Date
+    + cerrado : Boolean
+  }
+
+  class Presupuesto {
+    + id : UUID
+    + ejercicio : Int
+    + monto : Money
+  }
+}
+
+package "rrhh" {
+  class Nomina {
+    + id : UUID
+    + periodo : String
+    + total : Money
+  }
+
+  class Asistencia {
+    + id : UUID
+    + fecha : Date
+    + estado : String
+  }
+
+  class Vacacion {
+    + id : UUID
+    + inicio : Date
+    + fin : Date
+    + aprobada : Boolean
+  }
+}
+
+package "seguridad" {
+  class Usuario {
+    + id : UUID
+    + email : String
+    + nombre : String
+    + activo : Boolean
+  }
+
+  class Rol {
+    + id : UUID
+    + nombre : String
+  }
+
+  class Permiso {
+    + id : UUID
+    + recurso : String
+    + accion : String
+  }
+
+  class Auditoria {
+    + id : UUID
+    + tablaOrigen : String
+    + registroId : UUID
+    + accion : String
+    + fecha : DateTime
+    + valoresAnteriores : Json
+    + valoresNuevos : Json
+  }
+}
+
+' --- Relaciones maestra ---
+Proveedor "1" -- "0..*" Producto : suministra
+Cliente "1" -- "0..*" Cotizacion : solicita
+Almacen "1" -- "0..*" Stock : contiene
+
+' --- Compras ---
+Producto "1" -- "0..*" Requisicion : solicita
+Proveedor "1" -- "0..*" OrdenCompra : recibe
+OrdenCompra "1" *-- "1..*" DetalleOC
+OrdenCompra "1" -- "0..*" Recepcion : verifica
+Requisicion "1" -- "0..*" OrdenCompra : origina
+
+' --- Inventario ---
+Recepcion "1" -- "1..*" Movimiento : genera
+Producto "1" -- "0..*" Movimiento : afecta
+Almacen "1" -- "0..*" Movimiento : registra
+Producto "1" -- "0..*" Stock
+Producto "1" -- "0..*" Alerta : dispara
+Conteo "1" -- "0..*" Movimiento : ajusta
+
+' --- Ventas ---
+Cliente "1" -- "0..*" OrdenVenta : compra
+OrdenVenta "1" *-- "1..*" DetalleOV
+Cotizacion "1" -- "0..1" OrdenVenta : convierte
+OrdenVenta "1" -- "0..*" Factura : factura
+Factura "1" -- "0..*" Pago : cobra
+Producto "1" -- "0..*" DetalleOV
+
+' --- Contabilidad ---
+Asiento "1" *-- "2..*" LineaAsiento
+LineaAsiento "*" -- "1" PlanCuenta : imputa
+Periodo "1" -- "0..*" Asiento : agrupa
+Factura "1" ..> "1..*" Asiento : genera
+Recepcion "1" ..> "1..*" Asiento : genera
+Nomina "1" ..> "1..*" Asiento : genera
+Presupuesto "*" -- "1" Empleado : departamento
+
+' --- RRHH ---
+Empleado "1" -- "0..*" Nomina : percibe
+Empleado "1" -- "0..*" Asistencia : registra
+Empleado "1" -- "0..*" Vacacion : solicita
+
+' --- Seguridad ---
+Usuario "*" -- "*" Rol : tiene
+Rol "*" -- "*" Permiso : concede
+Usuario "1" -- "0..*" Auditoria : ejecuta
+Auditoria ..> Empleado : audita
+Auditoria ..> Producto : audita
+Auditoria ..> OrdenCompra : audita
+Auditoria ..> OrdenVenta : audita
+Auditoria ..> Asiento : audita
+
+@enduml

@@ -1,0 +1,56 @@
+@startuml componentes
+title Vista de Implementación — Componentes
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+package "Cliente" {
+  [SPA Angular 17+]
+}
+
+package "API Scala (http4s + Tapir)" {
+  [Endpoints REST\n/OpenAPI] as API
+  [Auth Adapter\nJWKS Supabase] as Auth
+  [Casos de Uso\n(application)] as UC
+  [Dominio\n(reglas puras)] as Domain
+  [Repositorios\n(Skunk)] as Repo
+  [Auditoría] as Audit
+  [Notificaciones] as Notify
+  [Reportería\nJasperReports] as Report
+}
+
+package "Supabase" {
+  database "PostgreSQL 15+\nRLS" as DB
+  [Supabase Auth\n(GoTrue)] as GoTrue
+  [Storage] as Storage
+}
+
+[Metabase] as Meta
+[JasperReports Server] as Jasper
+
+SPA --> API : HTTPS/JSON + JWT
+API --> Auth
+API --> UC
+UC --> Domain
+UC --> Repo
+UC --> Audit
+UC --> Notify
+Repo --> DB
+Auth --> GoTrue
+SPA --> GoTrue : login/refresh
+Repo --> DB : SQL transaccional
+Report --> Jasper : plantillas .jrxml
+UC --> Report
+Meta --> DB : solo lectura
+SPA --> Storage : archivos
+
+note right of API
+  Contrato único generado desde Tapir:
+  OpenAPI 3.1 + Swagger UI
+end note
+
+note bottom of Domain
+  Sin dependencias de HTTP ni SQL:
+  testeable de forma pura (Cats)
+end note
+
+@enduml

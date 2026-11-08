@@ -1,0 +1,64 @@
+@startuml casos-de-uso
+title Casos de Uso — ERP TechSupply Solutions
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #EAF2FB
+  BorderColor #2F5D8A
+}
+
+actor "Administrador" as Admin
+actor "Gerente" as Gerente
+actor "Comprador" as Comprador
+actor "Almacenista" as Almacen
+actor "Vendedor" as Vendedor
+actor "Contador" as Contador
+actor "Analista RRHH" as RRHH
+actor "Cliente" as Cliente
+actor "Supabase Auth" as Supa <<externo>>
+actor "Metabase" as Meta <<externo>>
+
+rectangle "Sistema ERP — TechSupply Solutions" {
+  usecase "CU-00\nAutenticarse y\ngestionar sesión" as CU00
+  usecase "CU-01\nGestionar catálogos\nmaestros" as CU01
+  usecase "CU-02\nGestionar usuarios\ny roles" as CU02
+  usecase "CU-03\nGenerar requisición\nde compra" as CU03
+  usecase "CU-04\nEmitir orden\nde compra" as CU04
+  usecase "CU-05\nRecibir bienes\ncontra OC" as CU05
+  usecase "CU-06\nRegistrar movimiento\nde inventario" as CU06
+  usecase "CU-07\nConteo cíclico\ny ajuste" as CU07
+  usecase "CU-08\nCotizar y generar\norden de venta" as CU08
+  usecase "CU-09\nValidar crédito\ny reservar stock" as CU09
+  usecase "CU-10\nFacturar y registrar\ncuenta por cobrar" as CU10
+  usecase "CU-11\nGenerar asientos\ncontables" as CU11
+  usecase "CU-12\nConsultar estados\nfinancieros" as CU12
+  usecase "CU-13\nProcesar nómina" as CU13
+  usecase "CU-14\nConsultar dashboard\ny reportes" as CU14
+}
+
+Admin --> CU01
+Admin --> CU02
+Comprador --> CU03
+Comprador --> CU04
+Almacen --> CU05
+Almacen --> CU06
+Almacen --> CU07
+Vendedor --> CU08
+Vendedor --> CU10
+Cliente --> CU08
+Cliente --> CU14
+Contador --> CU11
+Contador --> CU12
+RRHH --> CU13
+Gerente --> CU14
+Gerente --> CU12
+
+CU00 --> Supa
+CU14 --> Meta
+
+CU08 ..> CU09 : <<include>>
+CU10 ..> CU11 : <<include>>
+CU05 ..> CU06 : <<extend>>
+CU12 ..> CU14 : <<extend>>
+
+@enduml
