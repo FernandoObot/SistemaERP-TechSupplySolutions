@@ -1,0 +1,73 @@
+.shell {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 248px;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 12px;
+
+  mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--mat-sys-primary);
+  }
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+
+  small {
+    color: var(--mat-sys-on-surface-variant);
+    letter-spacing: 0.2em;
+  }
+}
+
+.sidenav-footer {
+  padding: 16px 20px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 12px;
+}
+
+.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.active {
+  background: var(--mat-sys-secondary-container);
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--mat-sys-surface);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.title {
+  font-weight: 600;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.user {
+  margin-right: 8px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.content {
+  padding: 24px;
+}

@@ -1,0 +1,42 @@
+<mat-sidenav-container class="shell">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="brand">
+      <mat-icon>precision_manufacturing</mat-icon>
+      <div class="brand-text">
+        <strong>TechSupply</strong>
+        <small>ERP</small>
+      </div>
+    </div>
+
+    <mat-nav-list>
+      @for (item of navItems; track item.label) {
+        <a
+          mat-list-item
+          [routerLink]="item.disabled ? null : item.route"
+          routerLinkActive="active"
+          [class.disabled]="item.disabled"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <div class="sidenav-footer">Fase 3 · Sprint 0</div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="toolbar">
+      <span class="title">Sistema ERP — TechSupply Solutions</span>
+      <span class="spacer"></span>
+      <span class="user">{{ auth.user()?.name ?? 'Invitado' }}</span>
+      <button mat-icon-button aria-label="Cerrar sesión" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
