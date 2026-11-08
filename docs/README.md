@@ -2,7 +2,8 @@
 
 Índice de la documentación del proyecto académico. La **Fase 1** (análisis y diseño
 arquitectónico) está contenida en `01-requisitos/` y `02-arquitectura/`; la **Fase 2**
-(componentes reutilizables) en `02-arquitectura/componentes/`.
+(componentes reutilizables) en `02-arquitectura/componentes/`; la **Fase 3**
+(desarrollo incremental) en `05-desarrollo/`.
 
 ## Estructura
 
@@ -23,17 +24,19 @@ docs/
 ├── 03-diagramas/
 │   ├── plantuml/                # Fuente .puml versionada
 │   └── exportados/              # PNG/SVG generados (CI o local)
-└── 04-gestion/
-    ├── ramas-y-commits.md       # Git Flow / GitHub Flow y Conventional Commits
-    └── stack-tecnologico.md     # Resumen del stack y justificación
+├── 04-gestion/
+│   ├── ramas-y-commits.md       # Git Flow / GitHub Flow y Conventional Commits
+│   └── stack-tecnologico.md     # Resumen del stack y justificación
+└── 05-desarrollo/
+    └── sprint-0.md              # Base del proyecto, contrato y arranque
 ```
 
 ## Stack decidido
 
 | Capa | Tecnología | Justificación |
 |---|---|---|
-| Frontend | **Angular 17+ (standalone) + TypeScript** | Requisito del equipo; tipado fuerte, inyección de dependencias, soporte empresarial. |
-| API / Backend | **Scala 3 + http4s + Tapir + Cats Effect + Circe** | Programación funcional pura, efectos controlados, endpoints tipados. |
+| Frontend | **Angular 22 (standalone) + TypeScript** | Requisito del equipo; tipado fuerte, inyección de dependencias, soporte empresarial. |
+| API / Backend | **Scala 3.9 + http4s + Tapir + Cats Effect + Circe** | Programación funcional pura, efectos controlados, endpoints tipados. |
 | Persistencia | **Supabase (PostgreSQL 15+) + Skunk** | Postgres administrado, migraciones y RLS; Skunk es un cliente funcional y type-safe. |
 | Autenticación | **Supabase Auth (GoTrue) + JWT** | Login, registro, recuperación y sesiones sin construir un IdP propio. El backend valida el JWT (JWKS). |
 | Reportes | **Metabase** (dashboards) + **JasperReports** (PDF formales) | Metabase entrega inteligencia de negocio rápida; JasperReports cubre reportes imprimibles. |
