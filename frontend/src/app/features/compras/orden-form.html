@@ -1,0 +1,87 @@
+<section class="page">
+  <header>
+    <div>
+      <h1>Nueva orden de compra</h1>
+      <p>Selecciona proveedor y agrega las líneas del pedido.</p>
+    </div>
+    <button mat-stroked-button type="button" (click)="cancelar()">Cancelar</button>
+  </header>
+
+  @if (error()) {
+    <mat-card appearance="outlined"><mat-card-content><p class="error">{{ error() }}</p></mat-card-content></mat-card>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="form">
+    <mat-card appearance="outlined">
+      <mat-card-content class="cabecera">
+        <mat-form-field appearance="outline">
+          <mat-label>Proveedor</mat-label>
+          <mat-select formControlName="proveedorId">
+            @for (p of proveedores(); track p.id) {
+              <mat-option [value]="p.id">{{ p.nombre }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Observaciones</mat-label>
+          <input matInput formControlName="observaciones" />
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <div class="lineas-header">
+          <h2>Líneas</h2>
+          <button mat-stroked-button type="button" (click)="agregarLinea()">
+            <mat-icon>add</mat-icon>
+            Agregar línea
+          </button>
+        </div>
+
+        @if (productos().length === 0) {
+          <p class="hint">No hay productos. Crea productos antes de generar una orden.</p>
+        }
+
+        <div formArrayName="detalles" class="lineas">
+          @for (linea of detalles.controls; track i; let i = $index) {
+            <div class="linea" [formGroupName]="i">
+              <mat-form-field appearance="outline" class="producto">
+                <mat-label>Producto</mat-label>
+                <mat-select formControlName="productoId" (selectionChange)="onProducto(i, $event.value)">
+                  @for (p of productos(); track p.id) {
+                    <mat-option [value]="p.id">{{ p.sku }} — {{ p.nombre }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="cantidad">
+                <mat-label>Cantidad</mat-label>
+                <input matInput type="number" min="1" formControlName="cantidad" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="precio">
+                <mat-label>Precio unitario</mat-label>
+                <input matInput type="number" min="0" step="0.01" formControlName="precioUnitario" />
+              </mat-form-field>
+
+              <div class="subtotal">{{ subtotal(i) | currency: 'MXN' }}</div>
+
+              <button mat-icon-button type="button" aria-label="Quitar línea" (click)="quitarLinea(i)">
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="resumen">
+      <strong>Total: {{ total() | currency: 'MXN' }}</strong>
+      <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando…' : 'Crear orden' }}
+      </button>
+    </div>
+  </form>
+</section>

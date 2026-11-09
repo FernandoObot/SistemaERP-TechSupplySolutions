@@ -1,0 +1,95 @@
+@if (loading()) {
+  <div class="state">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>Cargando orden…</span>
+  </div>
+} @else if (error()) {
+  <mat-card appearance="outlined"><mat-card-content><p class="error">{{ error() }}</p></mat-card-content></mat-card>
+} @else if (orden(); as oc) {
+  <section class="page">
+    <header>
+      <div>
+        <button mat-button type="button" (click)="volver()">
+          <mat-icon>arrow_back</mat-icon>
+          Volver
+        </button>
+        <h1>{{ oc.folio }}</h1>
+        <p>Estado: <span class="chip">{{ oc.estado }}</span> · Total: {{ oc.total | currency: 'MXN' }}</p>
+      </div>
+      @if (oc.estado !== 'Recibida' && oc.estado !== 'Cancelada') {
+        <button mat-flat-button color="primary" (click)="recibir()">
+          <mat-icon>local_shipping</mat-icon>
+          Recibir bienes
+        </button>
+      }
+    </header>
+
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <h2>Líneas de la orden</h2>
+        <table mat-table [dataSource]="oc.detalles" class="table">
+          <ng-container matColumnDef="producto">
+            <th mat-header-cell *matHeaderCellDef>Producto</th>
+            <td mat-cell *matCellDef="let d">{{ productoNombre(d.productoId) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="cantidad">
+            <th mat-header-cell *matHeaderCellDef>Ordenado</th>
+            <td mat-cell *matCellDef="let d">{{ d.cantidad }}</td>
+          </ng-container>
+          <ng-container matColumnDef="precio">
+            <th mat-header-cell *matHeaderCellDef>Precio</th>
+            <td mat-cell *matCellDef="let d">{{ d.precioUnitario | currency: 'MXN' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="subtotal">
+            <th mat-header-cell *matHeaderCellDef>Subtotal</th>
+            <td mat-cell *matCellDef="let d">{{ d.subtotal | currency: 'MXN' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="recibido">
+            <th mat-header-cell *matHeaderCellDef>Recibido</th>
+            <td mat-cell *matCellDef="let d">{{ recibido(d.id) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="pendiente">
+            <th mat-header-cell *matHeaderCellDef>Pendiente</th>
+            <td mat-cell *matCellDef="let d">{{ d.cantidad - recibido(d.id) }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="detalleColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: detalleColumns"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <h2>Recepciones</h2>
+        @if (recepciones().length === 0) {
+          <p class="hint">Aún no hay recepciones registradas.</p>
+        } @else {
+          <table mat-table [dataSource]="recepciones()" class="table">
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef>Fecha</th>
+              <td mat-cell *matCellDef="let r">{{ r.fecha | date: 'short' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="almacen">
+              <th mat-header-cell *matHeaderCellDef>Almacén</th>
+              <td mat-cell *matCellDef="let r">{{ almacenNombre(r.almacenId) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let r">{{ r.estado }}</td>
+            </ng-container>
+            <ng-container matColumnDef="detalles">
+              <th mat-header-cell *matHeaderCellDef>Detalle</th>
+              <td mat-cell *matCellDef="let r">
+                @for (d of r.detalles; track d.id) {
+                  <div>{{ productoNombre(d.productoId) }}: {{ d.cantidadRecibida }}</div>
+                }
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="recepcionColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: recepcionColumns"></tr>
+          </table>
+        }
+      </mat-card-content>
+    </mat-card>
+  </section>
+}
