@@ -104,3 +104,19 @@ MkDocs Material como sitio navegable. Los diagramas se renderizan en CI y se ver
 - (+) Documentación revisable en PRs y sin dependencia de herramientas propietarias.
 - (+) Diagramas reproducibles.
 - (−) El equipo debe aprender la sintaxis de PlantUML.
+
+---
+
+## ADR-008 — `SSL.Trusted` para Postgres en desarrollo
+
+**Estado:** aceptada (temporal)
+**Contexto:** el JDK 21 no confía en la CA del pooler de Supabase y la conexión falla
+con `SunCertPathBuilderException`. El proyecto es académico y se conecta al proyecto
+de Supabase Cloud.
+**Decisión:** usar `SSL.Trusted` en `DbPool` durante el desarrollo para aceptar el
+certificado del servidor sin validar la cadena.
+**Consecuencias:**
+- (+) Permite avanzar con la integración y las pruebas end-to-end.
+- (−) No valida el certificado: **no usar en producción**.
+- **Acción futura:** en producción cambiar a `SSL.System` e importar la CA de Supabase
+  en el truststore del contenedor.
