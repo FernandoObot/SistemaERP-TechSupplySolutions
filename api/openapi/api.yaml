@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: ERP TechSupply Solutions
-  version: 0.1.0
+  version: 0.2.0
 paths:
   /health:
     get:
@@ -13,25 +13,7 @@ paths:
             text/plain:
               schema:
                 type: string
-        '400':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+        default:
           description: ''
           content:
             application/json:
@@ -63,24 +45,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/PageDto_A'
         '400':
-          description: ''
+          description: 'Invalid value for: query parameter page, Invalid value for:
+            query parameter size'
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                type: string
+        default:
           description: ''
           content:
             application/json:
@@ -102,24 +73,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductoDto'
         '400':
-          description: ''
+          description: 'Invalid value for: body'
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                type: string
+        default:
           description: ''
           content:
             application/json:
@@ -141,25 +100,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductoDto'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      operationId: putApiV1ProductosId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoInputDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoDto'
         '400':
-          description: ''
+          description: 'Invalid value for: body'
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                type: string
+        default:
           description: ''
           content:
             application/json:
@@ -176,25 +150,425 @@ paths:
       responses:
         '204':
           description: ''
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/proveedores:
+    get:
+      operationId: getApiV1Proveedores
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          default: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        required: false
+        schema:
+          default: 20
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDto_A'
         '400':
+          description: 'Invalid value for: query parameter page, Invalid value for:
+            query parameter size'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '404':
+    post:
+      operationId: postApiV1Proveedores
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProveedorInputDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorDto'
+        '400':
+          description: 'Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '409':
+  /api/v1/proveedores/{id}:
+    get:
+      operationId: getApiV1ProveedoresId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorDto'
+        default:
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '422':
+    put:
+      operationId: putApiV1ProveedoresId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProveedorInputDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorDto'
+        '400':
+          description: 'Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      operationId: deleteApiV1ProveedoresId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/almacenes:
+    get:
+      operationId: getApiV1Almacenes
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          default: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        required: false
+        schema:
+          default: 20
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDto_A'
+        '400':
+          description: 'Invalid value for: query parameter page, Invalid value for:
+            query parameter size'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      operationId: postApiV1Almacenes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlmacenInputDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlmacenDto'
+        '400':
+          description: 'Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/almacenes/{id}:
+    get:
+      operationId: getApiV1AlmacenesId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlmacenDto'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      operationId: putApiV1AlmacenesId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlmacenInputDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlmacenDto'
+        '400':
+          description: 'Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      operationId: deleteApiV1AlmacenesId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/ordenes-compra:
+    get:
+      operationId: getApiV1Ordenes-compra
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          default: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        required: false
+        schema:
+          default: 20
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDto_A'
+        '400':
+          description: 'Invalid value for: query parameter page, Invalid value for:
+            query parameter size'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      operationId: postApiV1Ordenes-compra
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrdenCompraInputDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdenCompraDto'
+        '400':
+          description: 'Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/ordenes-compra/{id}:
+    get:
+      operationId: getApiV1Ordenes-compraId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdenCompraDto'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/ordenes-compra/{id}/recepciones:
+    get:
+      operationId: getApiV1Ordenes-compraIdRecepciones
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecepcionDto'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      operationId: postApiV1Ordenes-compraIdRecepciones
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecepcionInputDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecepcionDto'
+        '400':
+          description: 'Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
           description: ''
           content:
             application/json:
@@ -202,6 +576,53 @@ paths:
                 $ref: '#/components/schemas/ApiError'
 components:
   schemas:
+    AlmacenDto:
+      title: AlmacenDto
+      type: object
+      required:
+      - id
+      - codigo
+      - nombre
+      - capacidad
+      - activo
+      - version
+      properties:
+        id:
+          type: string
+        codigo:
+          type: string
+        nombre:
+          type: string
+        ubicacion:
+          type: string
+        capacidad:
+          type: integer
+          format: int32
+        activo:
+          type: boolean
+        version:
+          type: integer
+          format: int32
+    AlmacenInputDto:
+      title: AlmacenInputDto
+      type: object
+      required:
+      - codigo
+      - nombre
+      - capacidad
+      - activo
+      properties:
+        codigo:
+          type: string
+        nombre:
+          type: string
+        ubicacion:
+          type: string
+        capacidad:
+          type: integer
+          format: int32
+        activo:
+          type: boolean
     ApiError:
       title: ApiError
       type: object
@@ -220,6 +641,119 @@ components:
             type: string
         traceId:
           type: string
+    DetalleOCDto:
+      title: DetalleOCDto
+      type: object
+      required:
+      - id
+      - productoId
+      - cantidad
+      - precioUnitario
+      - subtotal
+      properties:
+        id:
+          type: string
+        productoId:
+          type: string
+        cantidad:
+          type: integer
+          format: int32
+        precioUnitario:
+          type: number
+        subtotal:
+          type: number
+    DetalleOCInputDto:
+      title: DetalleOCInputDto
+      type: object
+      required:
+      - productoId
+      - cantidad
+      - precioUnitario
+      properties:
+        productoId:
+          type: string
+        cantidad:
+          type: integer
+          format: int32
+        precioUnitario:
+          type: number
+    DetalleRecepcionDto:
+      title: DetalleRecepcionDto
+      type: object
+      required:
+      - id
+      - detalleOcId
+      - productoId
+      - cantidadRecibida
+      properties:
+        id:
+          type: string
+        detalleOcId:
+          type: string
+        productoId:
+          type: string
+        cantidadRecibida:
+          type: integer
+          format: int32
+    DetalleRecepcionInputDto:
+      title: DetalleRecepcionInputDto
+      type: object
+      required:
+      - detalleOcId
+      - cantidadRecibida
+      properties:
+        detalleOcId:
+          type: string
+        cantidadRecibida:
+          type: integer
+          format: int32
+    OrdenCompraDto:
+      title: OrdenCompraDto
+      type: object
+      required:
+      - id
+      - folio
+      - proveedorId
+      - fecha
+      - estado
+      - total
+      - version
+      properties:
+        id:
+          type: string
+        folio:
+          type: string
+        proveedorId:
+          type: string
+        fecha:
+          type: string
+        estado:
+          type: string
+        total:
+          type: number
+        observaciones:
+          type: string
+        version:
+          type: integer
+          format: int32
+        detalles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetalleOCDto'
+    OrdenCompraInputDto:
+      title: OrdenCompraInputDto
+      type: object
+      required:
+      - proveedorId
+      properties:
+        proveedorId:
+          type: string
+        observaciones:
+          type: string
+        detalles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetalleOCInputDto'
     PageDto_A:
       title: PageDto_A
       type: object
@@ -274,6 +808,8 @@ components:
         puntoReorden:
           type: integer
           format: int32
+        proveedorPrincipalId:
+          type: string
         activo:
           type: boolean
         version:
@@ -304,5 +840,98 @@ components:
         puntoReorden:
           type: integer
           format: int32
+        proveedorPrincipalId:
+          type: string
         activo:
           type: boolean
+    ProveedorDto:
+      title: ProveedorDto
+      type: object
+      required:
+      - id
+      - nombre
+      - activo
+      - version
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+        contacto:
+          type: string
+        email:
+          type: string
+        telefono:
+          type: string
+        condicionesPago:
+          type: string
+        evaluacion:
+          type: integer
+          format: int32
+        activo:
+          type: boolean
+        version:
+          type: integer
+          format: int32
+    ProveedorInputDto:
+      title: ProveedorInputDto
+      type: object
+      required:
+      - nombre
+      - activo
+      properties:
+        nombre:
+          type: string
+        contacto:
+          type: string
+        email:
+          type: string
+        telefono:
+          type: string
+        condicionesPago:
+          type: string
+        evaluacion:
+          type: integer
+          format: int32
+        activo:
+          type: boolean
+    RecepcionDto:
+      title: RecepcionDto
+      type: object
+      required:
+      - id
+      - ordenCompraId
+      - almacenId
+      - fecha
+      - estado
+      properties:
+        id:
+          type: string
+        ordenCompraId:
+          type: string
+        almacenId:
+          type: string
+        fecha:
+          type: string
+        estado:
+          type: string
+        observaciones:
+          type: string
+        detalles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetalleRecepcionDto'
+    RecepcionInputDto:
+      title: RecepcionInputDto
+      type: object
+      required:
+      - almacenId
+      properties:
+        almacenId:
+          type: string
+        observaciones:
+          type: string
+        detalles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetalleRecepcionInputDto'

@@ -1,10 +1,14 @@
 package erp.adapters.http
 
 import erp.application.Page
+import erp.domain.{ProductoId, ProveedorId}
 import erp.domain.maestra.{Producto, ProductoInput}
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
 import sttp.tapir.Schema
+
+import java.util.UUID
+import scala.util.Try
 
 final case class ProductoInputDto(
     sku: String,
@@ -13,10 +17,21 @@ final case class ProductoInputDto(
     linea: String,
     precio: BigDecimal,
     puntoReorden: Int,
+    proveedorPrincipalId: Option[String],
     activo: Boolean
 ):
   def toDomain: ProductoInput =
-    ProductoInput(sku, nombre, categoria, linea, precio, puntoReorden, activo)
+    ProductoInput(
+      sku = sku,
+      nombre = nombre,
+      categoria = categoria,
+      linea = linea,
+      precio = precio,
+      puntoReorden = puntoReorden,
+      proveedorPrincipalId =
+        proveedorPrincipalId.flatMap(s => Try(UUID.fromString(s)).toOption).map(ProveedorId(_)),
+      activo = activo
+    )
 
 object ProductoInputDto:
   given Encoder[ProductoInputDto] = deriveEncoder
@@ -31,6 +46,7 @@ final case class ProductoDto(
     linea: String,
     precio: BigDecimal,
     puntoReorden: Int,
+    proveedorPrincipalId: Option[String],
     activo: Boolean,
     version: Int
 )
@@ -49,6 +65,7 @@ object ProductoDto:
       linea = p.linea,
       precio = p.precio,
       puntoReorden = p.puntoReorden,
+      proveedorPrincipalId = p.proveedorPrincipalId.map(_.value.toString),
       activo = p.activo,
       version = p.version
     )

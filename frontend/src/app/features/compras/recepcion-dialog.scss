@@ -1,0 +1,31 @@
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: min(680px, 85vw);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.cantidad {
+  width: 110px;
+}
+
+.error {
+  color: var(--mat-sys-error);
+}

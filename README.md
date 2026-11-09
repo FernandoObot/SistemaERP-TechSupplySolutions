@@ -10,7 +10,7 @@ funcional + Supabase**.
 |---|---|---|
 | 1 | Análisis y diseño arquitectónico (4+1 vistas) | ✅ Documentada |
 | 2 | Componentes reutilizables | ✅ Documentada |
-| 3 | Desarrollo incremental (sprints) | 🚧 Sprint 0 completado |
+| 3 | Desarrollo incremental (sprints) | 🚧 Sprint 1-2 completado |
 | 4 | Pruebas y validación | ⏳ Pendiente |
 
 ## Estructura
@@ -58,6 +58,7 @@ Guía completa: [Sprint 0](docs/05-desarrollo/sprint-0.md).
 - [Decisiones arquitectónicas (ADR)](docs/02-arquitectura/decisiones.md)
 - [Componentes reutilizables (Fase 2)](docs/02-arquitectura/componentes/README.md)
 - [Sprint 0 — base del proyecto](docs/05-desarrollo/sprint-0.md)
+- [Sprint 1-2 — Maestra + Compras](docs/05-desarrollo/sprint-1-2.md)
 - [Backend — API Scala](backend/README.md)
 - [Contrato OpenAPI](api/openapi/README.md)
 - [Ramas y Conventional Commits](docs/04-gestion/ramas-y-commits.md)

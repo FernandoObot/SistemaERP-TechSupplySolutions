@@ -14,8 +14,8 @@ final class ProductoService[F[_]](repo: ProductoRepository[F]):
   def list(page: Int, size: Int): F[Page[Producto]] =
     repo.list(page, size)
 
-  def update(id: ProductoId, input: ProductoInput): F[Producto] =
+  def update(id: ProductoId, input: ProductoInput): F[Option[Producto]] =
     repo.update(id, Producto.from(input, id = id))
 
-  def delete(id: ProductoId): F[Unit] =
+  def delete(id: ProductoId): F[Boolean] =
     repo.softDelete(id)

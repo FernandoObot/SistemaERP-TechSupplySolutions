@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>{{ data ? 'Editar proveedor' : 'Nuevo proveedor' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="form-grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Contacto</mat-label>
+      <input matInput formControlName="contacto" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="telefono" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Condiciones de pago</mat-label>
+      <input matInput formControlName="condicionesPago" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Evaluación (1 a 5)</mat-label>
+      <input matInput type="number" min="1" max="5" formControlName="evaluacion" />
+    </mat-form-field>
+
+    <mat-checkbox formControlName="activo">Activo</mat-checkbox>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit">Guardar</button>
+  </mat-dialog-actions>
+</form>

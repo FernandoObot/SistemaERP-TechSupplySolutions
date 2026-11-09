@@ -28,7 +28,8 @@ docs/
 │   ├── ramas-y-commits.md       # Git Flow / GitHub Flow y Conventional Commits
 │   └── stack-tecnologico.md     # Resumen del stack y justificación
 └── 05-desarrollo/
-    └── sprint-0.md              # Base del proyecto, contrato y arranque
+    ├── sprint-0.md              # Base del proyecto, contrato y arranque
+    └── sprint-1-2.md            # Maestra + Compras sobre Supabase
 ```
 
 ## Stack decidido

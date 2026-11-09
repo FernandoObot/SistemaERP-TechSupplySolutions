@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Recibir bienes — {{ data.orden.folio }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="contenido">
+    <mat-form-field appearance="outline">
+      <mat-label>Almacén</mat-label>
+      <mat-select formControlName="almacenId">
+        @for (a of data.almacenes; track a.id) {
+          <mat-option [value]="a.id">{{ a.codigo }} — {{ a.nombre }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Observaciones</mat-label>
+      <input matInput formControlName="observaciones" />
+    </mat-form-field>
+
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Ordenado</th>
+          <th>Recibido</th>
+          <th>Pendiente</th>
+          <th>Recibir ahora</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="detalles">
+        @for (linea of detalles.controls; track i; let i = $index) {
+          @let detalle = data.orden.detalles[i];
+          <tr [formGroupName]="i">
+            <td>{{ productoNombre(detalle.productoId) }}</td>
+            <td>{{ detalle.cantidad }}</td>
+            <td>{{ recibidoPorDetalle.get(detalle.id) ?? 0 }}</td>
+            <td>{{ pendiente(detalle.id, detalle.cantidad) }}</td>
+            <td>
+              <mat-form-field appearance="outline" class="cantidad">
+                <input matInput type="number" min="0" [max]="pendiente(detalle.id, detalle.cantidad)" formControlName="cantidadRecibida" />
+              </mat-form-field>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (error.message) {
+      <p class="error">{{ error.message }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit">Registrar recepción</button>
+  </mat-dialog-actions>
+</form>

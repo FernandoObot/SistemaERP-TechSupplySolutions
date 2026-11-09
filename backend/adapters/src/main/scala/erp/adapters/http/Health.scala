@@ -5,7 +5,7 @@ import sttp.tapir.*
 import sttp.tapir.server.ServerEndpoint
 
 object Health:
-  private val healthEndpoint: PublicEndpoint[Unit, ApiError, String, Any] =
+  private val healthEndpoint: PublicEndpoint[Unit, ApiErrors.Failure, String, Any] =
     endpoint.get.in("health").out(stringBody).errorOut(ApiErrors.output)
 
   val route: ServerEndpoint[Any, IO] =

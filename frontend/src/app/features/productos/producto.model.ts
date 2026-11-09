@@ -6,14 +6,18 @@ export interface Producto {
   linea: string;
   precio: number;
   puntoReorden: number;
+  proveedorPrincipalId: string | null;
   activo: boolean;
   version: number;
 }
 
-export interface Page<T> {
-  items: T[];
-  page: number;
-  size: number;
-  total: number;
-  totalPages: number;
+export interface ProductoInput {
+  sku: string;
+  nombre: string;
+  categoria: string;
+  linea: string;
+  precio: number;
+  puntoReorden: number;
+  proveedorPrincipalId: string | null;
+  activo: boolean;
 }

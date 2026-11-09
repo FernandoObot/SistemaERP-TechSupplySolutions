@@ -36,9 +36,11 @@ export class Shell {
 
   protected readonly navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Gestión maestra', icon: 'inventory_2', route: '/productos' },
-    { label: 'Compras', icon: 'shopping_cart', route: '/dashboard', disabled: true },
-    { label: 'Inventario', icon: 'warehouse', route: '/dashboard', disabled: true },
+    { label: 'Productos', icon: 'inventory_2', route: '/productos' },
+    { label: 'Proveedores', icon: 'local_shipping', route: '/proveedores' },
+    { label: 'Almacenes', icon: 'warehouse', route: '/almacenes' },
+    { label: 'Compras', icon: 'shopping_cart', route: '/compras' },
+    { label: 'Inventario', icon: 'storage', route: '/dashboard', disabled: true },
     { label: 'Ventas', icon: 'point_of_sale', route: '/dashboard', disabled: true },
     { label: 'Contabilidad', icon: 'account_balance', route: '/dashboard', disabled: true },
     { label: 'Recursos humanos', icon: 'groups', route: '/dashboard', disabled: true },

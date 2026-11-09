@@ -1,6 +1,6 @@
 package erp.domain.maestra
 
-import erp.domain.ProductoId
+import erp.domain.{ProductoId, ProveedorId}
 
 import java.time.Instant
 
@@ -11,6 +11,7 @@ final case class ProductoInput(
     linea: String,
     precio: BigDecimal,
     puntoReorden: Int,
+    proveedorPrincipalId: Option[ProveedorId],
     activo: Boolean
 )
 
@@ -22,6 +23,7 @@ final case class Producto(
     linea: String,
     precio: BigDecimal,
     puntoReorden: Int,
+    proveedorPrincipalId: Option[ProveedorId],
     activo: Boolean,
     version: Int,
     createdAt: Instant,
@@ -42,6 +44,7 @@ object Producto:
       linea = input.linea.trim,
       precio = input.precio,
       puntoReorden = input.puntoReorden,
+      proveedorPrincipalId = input.proveedorPrincipalId,
       activo = input.activo,
       version = 1,
       createdAt = now,
