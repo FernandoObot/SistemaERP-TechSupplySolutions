@@ -1,8 +1,13 @@
 package erp.application
 
 import cats.syntax.all.*
+import erp.application.validation.ComprasValidator
 import erp.application.validation.ProductoValidator
+import erp.domain.{AlmacenId, ProductoId, ProveedorId, RecepcionId}
+import erp.domain.compras.*
 import erp.domain.maestra.ProductoInput
+
+import java.util.UUID
 
 class ValidationSpec extends munit.FunSuite:
 
@@ -14,7 +19,7 @@ class ValidationSpec extends munit.FunSuite:
       precio: BigDecimal = BigDecimal(149.90),
       puntoReorden: Int = 10
   ): ProductoInput =
-    ProductoInput(sku, nombre, categoria, linea, precio, puntoReorden, activo = true)
+    ProductoInput(sku, nombre, categoria, linea, precio, puntoReorden, None, activo = true)
 
   test("un producto válido pasa la validación") {
     assert(ProductoValidator.validate(input()).isValid)
@@ -47,4 +52,36 @@ class PageSpec extends munit.FunSuite:
     val page = Page(List(1, 2), page = 1, size = 2, total = 4L).map(_ * 10)
     assertEquals(page.items, List(10, 20))
     assertEquals(page.total, 4L)
+  }
+
+class ComprasSpec extends munit.FunSuite:
+
+  private val productoId = ProductoId(UUID.randomUUID())
+  private val proveedorId = ProveedorId(UUID.randomUUID())
+
+  test("el total de la orden suma cantidad por precio") {
+    val detalles = List(
+      DetalleOCInput(productoId, 2, BigDecimal(10.50)),
+      DetalleOCInput(productoId, 3, BigDecimal(4.00))
+    )
+    assertEquals(OrdenCompra.total(detalles), BigDecimal(33.00))
+  }
+
+  test("una orden sin líneas es inválida") {
+    val result = ComprasValidator.validarOrden(OrdenCompraInput(proveedorId, None, Nil))
+    assert(result.isInvalid)
+  }
+
+  test("una línea con cantidad cero es inválida") {
+    val result = ComprasValidator.validarOrden(
+      OrdenCompraInput(proveedorId, None, List(DetalleOCInput(productoId, 0, BigDecimal(10))))
+    )
+    assert(result.isInvalid)
+  }
+
+  test("una recepción sin líneas es inválida") {
+    val result = ComprasValidator.validarRecepcion(
+      RecepcionInput(AlmacenId(UUID.randomUUID()), None, Nil)
+    )
+    assert(result.isInvalid)
   }

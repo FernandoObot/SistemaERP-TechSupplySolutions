@@ -7,9 +7,9 @@ exportada desde la API en ejecución:
 curl -s http://localhost:8080/docs/docs.yaml -o api/openapi/api.yaml
 ```
 
-- `paths` documenta los endpoints actuales (`/health`, `/api/v1/productos`).
-- `components/schemas` contiene `ApiError`, `ProductoDto`, `ProductoInputDto` y `PageDto`.
-- En el Sprint 1 se agregarán los recursos restantes de Gestión Maestra:
-  proveedores, clientes, empleados, almacenes y rutas de entrega.
+- `paths` documenta los endpoints actuales (10 paths): health, proveedores,
+  productos, almacenes, órdenes de compra y recepciones.
+- `components/schemas` contiene los DTO de esos recursos y `ApiError`.
+- En los siguientes sprints se agregarán inventario, ventas, contabilidad y reportería.
 
 No editar `api.yaml` a mano: se regenera desde el código.

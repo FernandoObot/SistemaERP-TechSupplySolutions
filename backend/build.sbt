@@ -53,6 +53,8 @@ lazy val adapters = (project in file("adapters"))
       "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion,
       "io.circe"          %% "circe-core"           % circeVersion,
       "io.circe"          %% "circe-generic"        % circeVersion,
+      "org.tpolecat"      %% "skunk-core"           % "1.0.0",
+      "org.typelevel"     %% "otel4s-core"          % "0.16.0",
       "org.scalameta"     %% "munit"                % munitVersion            % Test,
       "org.typelevel"     %% "munit-cats-effect"    % munitCatsEffectVersion  % Test
     )

@@ -1,7 +1,10 @@
 package erp.adapters.http
 
+import cats.data.Validated
 import cats.effect.IO
+import cats.syntax.all.*
 import erp.application.maestra.ProductoService
+import erp.application.validation.{ProductoValidator, ValidationError}
 import erp.domain.ProductoId
 import sttp.model.StatusCode
 import sttp.tapir.*
@@ -13,8 +16,13 @@ import java.util.UUID
 
 final class ProductoEndpoints(service: ProductoService[IO]):
 
-  private val base =
-    endpoint.in("api" / "v1" / "productos").errorOut(ApiErrors.output)
+  private val base = endpoint.in("api" / "v1" / "productos").errorOut(ApiErrors.output)
+
+  private def parseId(value: String): Option[ProductoId] =
+    scala.util.Try(UUID.fromString(value)).toOption.map(ProductoId(_))
+
+  private def invalid(errors: List[ValidationError]): ApiErrors.Failure =
+    ApiErrors.validation(errors.map(e => s"${e.field}: ${e.message}"))
 
   val list: ServerEndpoint[Any, IO] =
     base.get
@@ -29,8 +37,12 @@ final class ProductoEndpoints(service: ProductoService[IO]):
     base.post
       .in(jsonBody[ProductoInputDto])
       .out(jsonBody[ProductoDto])
-      .serverLogicSuccess[IO] { input =>
-        service.create(input.toDomain).map(ProductoDto.from)
+      .serverLogic[IO] { input =>
+        ProductoValidator.validate(input.toDomain) match
+          case Validated.Valid(valid) =>
+            service.create(valid).map(p => Right(ProductoDto.from(p)))
+          case Validated.Invalid(errs) =>
+            IO.pure(Left(invalid(errs.toList)))
       }
 
   val find: ServerEndpoint[Any, IO] =
@@ -38,19 +50,47 @@ final class ProductoEndpoints(service: ProductoService[IO]):
       .in(path[String]("id"))
       .out(jsonBody[ProductoDto])
       .serverLogic[IO] { id =>
-        service.find(ProductoId(UUID.fromString(id))).map {
-          case Some(p) => Right(ProductoDto.from(p))
+        parseId(id) match
           case None =>
-            Left(ApiError("NO_ENCONTRADO", s"Producto $id no existe"))
-        }
+            IO.pure(Left(ApiErrors.validation(List(s"id: UUID inválido ($id)"))))
+          case Some(pid) =>
+            service.find(pid).map {
+              case Some(p) => Right(ProductoDto.from(p))
+              case None    => Left(ApiErrors.notFound(s"Producto $id no existe"))
+            }
+      }
+
+  val update: ServerEndpoint[Any, IO] =
+    base.put
+      .in(path[String]("id"))
+      .in(jsonBody[ProductoInputDto])
+      .out(jsonBody[ProductoDto])
+      .serverLogic[IO] { case (id, input) =>
+        parseId(id) match
+          case None => IO.pure(Left(ApiErrors.validation(List(s"id: UUID inválido ($id)"))))
+          case Some(pid) =>
+            ProductoValidator.validate(input.toDomain) match
+              case Validated.Invalid(errs) =>
+                IO.pure(Left(invalid(errs.toList)))
+              case Validated.Valid(valid) =>
+                service.update(pid, valid).map {
+                  case Some(p) => Right(ProductoDto.from(p))
+                  case None    => Left(ApiErrors.notFound(s"Producto $id no existe"))
+                }
       }
 
   val delete: ServerEndpoint[Any, IO] =
     base.delete
       .in(path[String]("id"))
       .out(statusCode(StatusCode.NoContent))
-      .serverLogicSuccess[IO] { id =>
-        service.delete(ProductoId(UUID.fromString(id)))
+      .serverLogic[IO] { id =>
+        parseId(id) match
+          case None => IO.pure(Left(ApiErrors.validation(List(s"id: UUID inválido ($id)"))))
+          case Some(pid) =>
+            service.delete(pid).map {
+              case true  => Right(())
+              case false => Left(ApiErrors.notFound(s"Producto $id no existe"))
+            }
       }
 
-  val all: List[ServerEndpoint[Any, IO]] = List(list, create, find, delete)
+  val all: List[ServerEndpoint[Any, IO]] = List(list, create, find, update, delete)

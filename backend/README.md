@@ -4,33 +4,52 @@
 
 - JDK 21 LTS
 - sbt 1.13.x (el runner descarga la versión declarada en `project/build.properties`)
+- `DATABASE_URL` (Postgres de Supabase) en el entorno o en `.env`
 
 ## Comandos
 
 ```bash
-sbt compile     # compila todos los módulos
-sbt test        # pruebas unitarias
-sbt "server/run" # API en http://localhost:8080
+./run-dev.sh     # carga ../.env y arranca la API en http://localhost:8080
+sbt compile      # compila todos los módulos
+sbt test         # pruebas unitarias
 ```
 
-## Endpoints del Sprint 0
+Si prefieres hacerlo manualmente:
+
+```bash
+set -a; source ../.env; set +a
+sbt "server/run"
+```
+
+## Endpoints
 
 | Método | Ruta | Descripción |
 |---|---|---|
 | GET | `/health` | Estado del servicio. |
-| GET | `/api/v1/productos?page=0&size=20` | Lista paginada. |
-| POST | `/api/v1/productos` | Crea un producto. |
-| GET | `/api/v1/productos/{id}` | Obtiene un producto. |
-| DELETE | `/api/v1/productos/{id}` | Borrado lógico. |
+| GET/POST | `/api/v1/proveedores` | Lista / crea proveedor. |
+| GET/PUT/DELETE | `/api/v1/proveedores/{id}` | Consulta / actualiza / desactiva. |
+| GET/POST | `/api/v1/productos` | Lista / crea producto. |
+| GET/PUT/DELETE | `/api/v1/productos/{id}` | Consulta / actualiza / desactiva. |
+| GET/POST | `/api/v1/almacenes` | Lista / crea almacén. |
+| GET/PUT/DELETE | `/api/v1/almacenes/{id}` | Consulta / actualiza / desactiva. |
+| GET/POST | `/api/v1/ordenes-compra` | Lista / crea orden de compra. |
+| GET | `/api/v1/ordenes-compra/{id}` | Orden con detalle. |
+| POST | `/api/v1/ordenes-compra/{id}/recepciones` | Registra recepción. |
+| GET | `/api/v1/ordenes-compra/{id}/recepciones` | Historial de recepciones. |
 | GET | `/docs` | Swagger UI. |
 | GET | `/docs/docs.yaml` | OpenAPI generado. |
 
 ## Módulos
 
-- `domain`: modelo y reglas puras.
+- `domain`: modelo y reglas puras (Producto, Proveedor, Almacén, OrdenCompra, Recepción).
 - `application`: puertos, validación y casos de uso.
-- `adapters`: HTTP (Tapir/http4s), persistencia en memoria.
-- `infrastructure`: configuración.
-- `server`: `Main` y arranque de Ember.
+- `adapters`: HTTP (Tapir/http4s) y persistencia (Skunk).
+- `infrastructure`: configuración de entorno.
+- `server`: `Main`, pool de base de datos y arranque de Ember.
 
-En el Sprint 1 se reemplaza el repositorio en memoria por Skunk + Supabase.
+## Notas
+
+- `DbConfig` parsea `DATABASE_URL`.
+- En desarrollo se usa `SSL.Trusted` para Postgres; en producción usar `SSL.System`
+  con la CA correspondiente en el truststore.
+- La autenticación JWT se implementa en el siguiente incremento.
